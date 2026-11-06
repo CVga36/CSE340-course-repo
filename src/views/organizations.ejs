@@ -13,63 +13,32 @@
 
     <section class="organizations">
 
-        <h2>Our Partner Organizations</h2>
+        <h2>Our Community Partners</h2>
 
         <div class="organization-grid">
 
-            <article class="organization-card">
-                <img
-                    src="/images/brightfuture-logo.png"
-                    alt="BrightFuture Builders logo"
-                >
+            <% organizations.forEach(organization => { %>
 
-                <h3>BrightFuture Builders</h3>
+                <article class="organization-card">
 
-                <p>
-                    Supporting communities through
-                    construction and development projects.
-                </p>
+                    <img
+                        src="/images/<%= organization.logo_filename %>"
+                        alt="<%= organization.name %> logo"
+                    >
 
-                <a href="mailto:info@brightfuture.org">
-                    Contact Organization
-                </a>
-            </article>
+                    <h3><%= organization.name %></h3>
 
-            <article class="organization-card">
-                <img
-                    src="/images/greenharvest-logo.png"
-                    alt="GreenHarvest Growers logo"
-                >
+                    <p>
+                        <%= organization.description %>
+                    </p>
 
-                <h3>GreenHarvest Growers</h3>
+                    <a href="mailto:<%= organization.contact_email %>">
+                        Contact Organization
+                    </a>
 
-                <p>
-                    Promoting environmental sustainability
-                    and community gardening.
-                </p>
+                </article>
 
-                <a href="mailto:contact@greenharvest.org">
-                    Contact Organization
-                </a>
-            </article>
-
-            <article class="organization-card">
-                <img
-                    src="/images/unityserve-logo.png"
-                    alt="UnityServe Volunteers logo"
-                >
-
-                <h3>UnityServe Volunteers</h3>
-
-                <p>
-                    Connecting volunteers with meaningful
-                    community service opportunities.
-                </p>
-
-                <a href="mailto:hello@unityserve.org">
-                    Contact Organization
-                </a>
-            </article>
+            <% }); %>
 
         </div>
 

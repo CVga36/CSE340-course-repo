@@ -1,6 +1,10 @@
+import "dotenv/config";
 import express from "express";
 import { fileURLToPath } from "url";
 import path from "path";
+
+import { testConnection } from "./src/models/db.js";
+import { getAllOrganizations } from "./src/models/organizations.js";
 
 // Configure application
 const app = express();
@@ -18,30 +22,65 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
 
 // Home route
-app.get("/", async (req, res) => {
+app.get("/", (req, res) => {
     const title = "Home";
+
     res.render("home", { title });
 });
 
 // Organizations route
 app.get("/organizations", async (req, res) => {
-    const title = "Our Partner Organizations";
-    res.render("organizations", { title });
+    try {
+        const organizations = await getAllOrganizations();
+        const title = "Our Partner Organizations";
+
+        res.render("organizations", {
+            title,
+            organizations
+        });
+
+    } catch (error) {
+        console.error("Error loading organizations:", error.message);
+
+        res.status(500).send(
+            "An error occurred while loading organizations."
+        );
+    }
 });
 
 // Projects route
-app.get("/projects", async (req, res) => {
+app.get("/projects", (req, res) => {
     const title = "Service Projects";
+
     res.render("projects", { title });
 });
 
 // Categories route
-app.get("/categories", async (req, res) => {
+app.get("/categories", (req, res) => {
     const title = "Service Project Categories";
+
     res.render("categories", { title });
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+const startServer = async () => {
+    try {
+        await testConnection();
+
+        app.listen(PORT, () => {
+            console.log(
+                `Server running at http://localhost:${PORT}`
+            );
+        });
+
+    } catch (error) {
+        console.error(
+            "Unable to start server:",
+            error.message
+        );
+
+        process.exitCode = 1;
+    }
+};
+
+startServer();
