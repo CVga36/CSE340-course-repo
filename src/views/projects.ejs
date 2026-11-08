@@ -4,7 +4,6 @@
 
     <section class="page-header">
         <h1><%= title %></h1>
-
         <p>
             Explore meaningful service opportunities
             and make a positive impact in your community.
@@ -17,49 +16,37 @@
 
         <div class="project-grid">
 
-            <article class="project-card">
-                <h3>Community Garden Project</h3>
+            <% projects.forEach(project => { %>
 
-                <p>
-                    Help create and maintain community gardens
-                    to promote environmental sustainability.
-                </p>
+                <article class="project-card">
 
-                <p><strong>Category:</strong> Environmental</p>
-            </article>
+                    <h3><%= project.title %></h3>
 
-            <article class="project-card">
-                <h3>Educational Support Program</h3>
+                    <p><%= project.description %></p>
 
-                <p>
-                    Volunteer to help students improve their
-                    academic skills and achieve their goals.
-                </p>
+                    <p>
+                        <strong>Organization:</strong>
+                        <%= project.organization_name %>
+                    </p>
 
-                <p><strong>Category:</strong> Educational</p>
-            </article>
+                    <p>
+                        <strong>Location:</strong>
+                        <%= project.location %>
+                    </p>
 
-            <article class="project-card">
-                <h3>Neighborhood Cleanup</h3>
+                    <p>
+                        <strong>Date:</strong>
+                        <%= new Date(project.project_date).toLocaleDateString('en-US', {
+                            timeZone: 'UTC',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }) %>
+                    </p>
 
-                <p>
-                    Join volunteers in cleaning public spaces
-                    and improving local neighborhoods.
-                </p>
+                </article>
 
-                <p><strong>Category:</strong> Community Service</p>
-            </article>
-
-            <article class="project-card">
-                <h3>Community Wellness Program</h3>
-
-                <p>
-                    Support activities that encourage healthy
-                    living and community well-being.
-                </p>
-
-                <p><strong>Category:</strong> Health and Wellness</p>
-            </article>
+            <% }); %>
 
         </div>
 

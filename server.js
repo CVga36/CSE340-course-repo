@@ -5,6 +5,8 @@ import path from "path";
 
 import { testConnection } from "./src/models/db.js";
 import { getAllOrganizations } from "./src/models/organizations.js";
+import { getAllProjects } from "./src/models/projects.js";
+import { getAllCategories } from "./src/models/categories.js";
 
 // Configure application
 const app = express();
@@ -49,17 +51,41 @@ app.get("/organizations", async (req, res) => {
 });
 
 // Projects route
-app.get("/projects", (req, res) => {
-    const title = "Service Projects";
+app.get("/projects", async (req, res) => {
+    try {
+        const title = "Service Projects";
+        const projects = await getAllProjects();
 
-    res.render("projects", { title });
+        res.render("projects", {
+            title,
+            projects
+        });
+
+    } catch (error) {
+        console.error("Error loading projects:", error.message);
+        res.status(500).send("Error loading projects");
+    }
 });
 
 // Categories route
-app.get("/categories", (req, res) => {
-    const title = "Service Project Categories";
+app.get("/categories", async (req, res) => {
+    try {
+        const title = "Service Project Categories";
 
-    res.render("categories", { title });
+        const categories = await getAllCategories();
+
+        res.render("categories", {
+            title,
+            categories
+        });
+
+    } catch (error) {
+        console.error("Error loading categories:", error.message);
+
+        res.status(500).send(
+            "An error occurred while loading categories."
+        );
+    }
 });
 
 // Start server
