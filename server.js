@@ -1,16 +1,16 @@
+import { showServerError } from "./src/controllers/errors.js";
 import "dotenv/config";
 import express from "express";
 import { fileURLToPath } from "url";
 import path from "path";
 
 import { testConnection } from "./src/models/db.js";
-import { getAllOrganizations } from "./src/models/organizations.js";
-import { getAllProjects } from "./src/models/projects.js";
-import { getAllCategories } from "./src/models/categories.js";
+import routes from "./src/routes.js";
 
 // Configure application
 const app = express();
 const PORT = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 // Configure file paths
 const __filename = fileURLToPath(import.meta.url);
@@ -23,70 +23,25 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
 
-// Home route
-app.get("/", (req, res) => {
-    const title = "Home";
-
-    res.render("home", { title });
-});
-
-// Organizations route
-app.get("/organizations", async (req, res) => {
-    try {
-        const organizations = await getAllOrganizations();
-        const title = "Our Partner Organizations";
-
-        res.render("organizations", {
-            title,
-            organizations
-        });
-
-    } catch (error) {
-        console.error("Error loading organizations:", error.message);
-
-        res.status(500).send(
-            "An error occurred while loading organizations."
-        );
+// Log requests in development mode
+app.use((req, res, next) => {
+    if (NODE_ENV === "development") {
+        console.log(`${req.method} ${req.url}`);
     }
+    next();
 });
 
-// Projects route
-app.get("/projects", async (req, res) => {
-    try {
-        const title = "Service Projects";
-        const projects = await getAllProjects();
-
-        res.render("projects", {
-            title,
-            projects
-        });
-
-    } catch (error) {
-        console.error("Error loading projects:", error.message);
-        res.status(500).send("Error loading projects");
-    }
+// Make NODE_ENV available to EJS
+app.use((req, res, next) => {
+    res.locals.NODE_ENV = NODE_ENV;
+    next();
 });
 
-// Categories route
-app.get("/categories", async (req, res) => {
-    try {
-        const title = "Service Project Categories";
+// Application routes
+app.use("/", routes);
 
-        const categories = await getAllCategories();
-
-        res.render("categories", {
-            title,
-            categories
-        });
-
-    } catch (error) {
-        console.error("Error loading categories:", error.message);
-
-        res.status(500).send(
-            "An error occurred while loading categories."
-        );
-    }
-});
+// Handle server errors
+app.use(showServerError);
 
 // Start server
 const startServer = async () => {
@@ -94,17 +49,11 @@ const startServer = async () => {
         await testConnection();
 
         app.listen(PORT, () => {
-            console.log(
-                `Server running at http://localhost:${PORT}`
-            );
+            console.log(`Server running at http://localhost:${PORT}`);
         });
 
     } catch (error) {
-        console.error(
-            "Unable to start server:",
-            error.message
-        );
-
+        console.error("Unable to start server:", error.message);
         process.exitCode = 1;
     }
 };

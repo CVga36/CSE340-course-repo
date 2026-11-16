@@ -1,0 +1,30 @@
+<%- include("partials/header") %>
+
+<main>
+    <h1><%= organization.name %></h1>
+
+    <p><%= organization.description %></p>
+
+    <p>
+        <strong>Email:</strong>
+        <%= organization.contact_email %>
+    </p>
+
+    <h2>Service Projects</h2>
+
+    <% if (projects.length === 0) { %>
+        <p>No projects available.</p>
+    <% } else { %>
+        <ul>
+            <% projects.forEach(project => { %>
+                <li>
+                    <a href="/project/<%= project.project_id %>">
+                        <%= project.title %>
+                    </a>
+                </li>
+            <% }); %>
+        </ul>
+    <% } %>
+</main>
+
+<%- include("partials/footer") %>

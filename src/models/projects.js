@@ -1,6 +1,6 @@
 import db from "./db.js";
 
-// Get all service projects
+// Get the next five upcoming projects
 const getAllProjects = async () => {
     try {
         const query = `
@@ -15,11 +15,12 @@ const getAllProjects = async () => {
             FROM public.project AS p
             JOIN public.organization AS o
                 ON p.organization_id = o.organization_id
-            ORDER BY p.project_date, p.project_id;
+            WHERE p.project_date >= CURRENT_DATE
+            ORDER BY p.project_date, p.project_id
+            LIMIT 5;
         `;
 
         const result = await db.query(query);
-
         return result.rows;
 
     } catch (error) {
@@ -28,4 +29,20 @@ const getAllProjects = async () => {
     }
 };
 
-export { getAllProjects };
+// Get one project by ID
+const getProjectById = async (id) => {
+    const query = `
+        SELECT
+            p.*,
+            o.name AS organization_name
+        FROM public.project AS p
+        JOIN public.organization AS o
+            ON p.organization_id = o.organization_id
+        WHERE p.project_id = $1;
+    `;
+
+    const result = await db.query(query, [id]);
+    return result.rows[0];
+};
+
+export { getAllProjects, getProjectById };
