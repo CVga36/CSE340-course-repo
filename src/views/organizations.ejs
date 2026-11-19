@@ -1,7 +1,12 @@
 <%- include('partials/header') %>
 
 <main class="container">
-
+<!-- Success messages -->
+<% if (successMessages.length > 0) { %>
+    <% successMessages.forEach(message => { %>
+        <p class="success-message"><%= message %></p>
+    <% }); %>
+<% } %>
     <section class="page-header">
         <h1><%= title %></h1>
 

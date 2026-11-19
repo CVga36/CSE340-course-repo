@@ -15,15 +15,29 @@
 
         <h2>Explore by Interest</h2>
 
+        <p>
+            <a href="/new-category" class="btn">
+                + Create New Category
+            </a>
+        </p>
+
         <div class="category-grid">
 
             <% categories.forEach(category => { %>
 
                 <article class="category-card">
 
-                    <h3><a href="/category/<%= category.category_id %>">
-    <%= category.name %>
-</a></h3>
+                    <h3>
+                        <a href="/category/<%= category.category_id %>">
+                            <%= category.name %>
+                        </a>
+                    </h3>
+
+                    <p>
+                        <a href="/edit-category/<%= category.category_id %>">
+                            Edit Category
+                        </a>
+                    </p>
 
                 </article>
 

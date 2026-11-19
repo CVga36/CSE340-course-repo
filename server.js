@@ -1,3 +1,5 @@
+import session from "express-session";
+import flash from "connect-flash";
 import { showServerError } from "./src/controllers/errors.js";
 import "dotenv/config";
 import express from "express";
@@ -16,8 +18,34 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Handle form submissions
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Configure sessions
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: "lax"
+    }
+}));
+
+// Configure flash messages
+app.use(flash());
+
+// Make flash messages available to EJS
+app.use((req, res, next) => {
+    res.locals.successMessages = req.flash("success");
+    res.locals.errorMessages = req.flash("error");
+    next();
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
+
 
 // Configure EJS
 app.set("view engine", "ejs");

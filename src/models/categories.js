@@ -69,9 +69,64 @@ const getCategoriesByProjectId = async (id) => {
     return result.rows;
 };
 
+// Assign a category to a project
+const assignCategoryToProject = async (projectId, categoryId) => {
+    const query = `
+        INSERT INTO public.project_category (project_id, category_id)
+        VALUES ($1, $2)
+        ON CONFLICT DO NOTHING;
+    `;
+
+    await db.query(query, [projectId, categoryId]);
+};
+
+// Update a project's assigned categories
+const updateCategoryAssignments = async (projectId, categoryIds) => {
+    // Remove previous category assignments
+    const deleteQuery = `
+        DELETE FROM public.project_category
+        WHERE project_id = $1;
+    `;
+
+    await db.query(deleteQuery, [projectId]);
+
+    // Add the selected categories
+    for (const categoryId of categoryIds) {
+        await assignCategoryToProject(projectId, categoryId);
+    }
+};
+
+// Create a new category
+const createCategory = async (name) => {
+    const query = `
+        INSERT INTO public.category (name)
+        VALUES ($1)
+        RETURNING category_id;
+    `;
+
+    const result = await db.query(query, [name]);
+    return result.rows[0];
+};
+
+// Update an existing category
+const updateCategory = async (id, name) => {
+    const query = `
+        UPDATE public.category
+        SET name = $1
+        WHERE category_id = $2
+        RETURNING category_id;
+    `;
+
+    const result = await db.query(query, [name, id]);
+    return result.rows[0];
+};
+
 export {
     getAllCategories,
     getCategoryById,
     getProjectsByCategoryId,
-    getCategoriesByProjectId
+    getCategoriesByProjectId,
+    updateCategoryAssignments,
+    createCategory,
+    updateCategory
 };

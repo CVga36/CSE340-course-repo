@@ -312,3 +312,14 @@ a:focus-visible {
         padding: 8px 4px;
     }
 }
+
+
+/* Success message */
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    margin: 20px 0;
+}

@@ -43,8 +43,55 @@ const getProjectsByOrganizationId = async (id) => {
     return result.rows;
 };
 
+
+// Create a new organization
+const createOrganization = async (name, description, contactEmail) => {
+    const query = `
+        INSERT INTO public.organization
+            (name, description, contact_email, logo_filename)
+        VALUES ($1, $2, $3, $4)
+        RETURNING organization_id;
+    `;
+
+    const result = await db.query(query, [
+        name,
+        description,
+        contactEmail,
+        "cse340-service-network.png"
+    ]);
+
+    return result.rows[0];
+};
+
+// Update an existing organization
+const updateOrganization = async (id, name, description, contactEmail, logoFilename) => {
+    const query = `
+        UPDATE public.organization
+        SET
+            name = $1,
+            description = $2,
+            contact_email = $3,
+            logo_filename = $4
+        WHERE organization_id = $5
+        RETURNING organization_id;
+    `;
+
+    const result = await db.query(query, [
+        name,
+        description,
+        contactEmail,
+        logoFilename,
+        id
+    ]);
+
+    return result.rows[0];
+};
+
+
 export {
     getAllOrganizations,
     getOrganizationById,
-    getProjectsByOrganizationId
+    getProjectsByOrganizationId,
+    createOrganization,
+    updateOrganization
 };
